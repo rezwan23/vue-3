@@ -9,7 +9,7 @@ export default [
     title: 'Forums',
     icon: { icon: 'tabler-ad-2' },
     children: [
-      { title: 'Vaccines', to: 'apps-roles' },
+      { title: 'Type 1', to: 'apps-forum' },
       { title: 'Medication', to: '' },
       { title: 'Pediatric', to: '' },
       { title: 'Doctors', to: '' },
