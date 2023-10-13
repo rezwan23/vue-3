@@ -1,38 +1,3 @@
-<script setup>
-const statistics = [
-  {
-    "title": "Total Users",
-    "stats": 100,
-    "icon": "tabler-users",
-    "color": "info",
-  },
-  {
-    "title": "Total Children",
-    "stats": 100,
-    "icon": "tabler-baby-carriage",
-    "color": "primary",
-  },
-  {
-    "title": "Total Students",
-    "stats": 100,
-    "icon": "tabler-school",
-    "color": "info",
-  },
-  {
-    "title": "Total Records",
-    "stats": 100,
-    "icon": "tabler-chart-pie-2",
-    "color": "error",
-  },
-  {
-    "title": "Total Forum Posts",
-    "stats": 100,
-    "icon": "tabler-message-share",
-    "color": "success",
-  },
-]
-</script>
-
 <template>
   <VCard title="Statistics">
     <template #append>
@@ -41,18 +6,9 @@ const statistics = [
 
     <VCardText class="pt-6">
       <VRow>
-        <VCol
-          v-for="item in statistics"
-          :key="item.title"
-          cols="6"
-          md="4"
-        >
+        <VCol v-for="item in statistics" :key="item.title" cols="6" md="4">
           <div class="d-flex align-center gap-4">
-            <VAvatar
-              :color="item.color"
-              variant="tonal"
-              size="42"
-            >
+            <VAvatar :color="item.color" variant="tonal" size="42">
               <VIcon :icon="item.icon" />
             </VAvatar>
 
@@ -68,3 +24,38 @@ const statistics = [
     </VCardText>
   </VCard>
 </template>
+
+<script>
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      statistics: [],
+    };
+  },
+  computed: {
+    apiUrl() {
+      return this.$store.state.apiUrl;
+    },
+  },
+  mounted() {
+    console.log("mounted!");
+    this.getDashboardData();
+  },
+  methods: {
+    getDashboardData() {
+      axios
+        .get(`${this.apiUrl}/dashboard/statistics`)
+        .then((res) => {
+          this.statistics = res.data.data.statistics;
+        })
+        .catch((err) => {
+          if (err.response.status == 401) {
+            this.$store.commit('removeSession')
+          }
+        });
+    },
+  },
+};
+</script>

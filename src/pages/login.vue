@@ -16,7 +16,6 @@ import {
   emailValidator,
   requiredValidator,
 } from '@validators'
-import axiosIns from "@axios"
 
 const authThemeImg = useGenerateImageVariant(authV2LoginIllustrationLight, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
 const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
@@ -31,57 +30,36 @@ const errors = ref({
 })
 
 const refVForm = ref()
-const email = ref('admin@demo.com')
-const password = ref('admin')
+const email = ref('sharifultikweb@gmail.com')
+const password = ref('password')
 const rememberMe = ref(false)
 
 
+const userAbilities = '[{"actiapiUrlon":"manage","subject":"all"}]';
+
+
+
 const login = () => {
-  axios.post('auth/login', {
+  axios.post('https://apitest.myhealthlog.in/admin/api/v1/login', {
     email: email.value,
     password: password.value,
   }).then(r => {
 
-    const { accessToken, userAbilities, userData } = r.data
 
-    localStorage.setItem('userAbilities', JSON.stringify(userAbilities))
-    ability.update(userAbilities)
-    localStorage.setItem('userData', JSON.stringify(userData))
-    localStorage.setItem('accessToken', JSON.stringify(accessToken))
+    localStorage.setItem('userAbilities', userAbilities)
+    ability.update(JSON.parse(userAbilities));
+    localStorage.setItem('userData', JSON.stringify(r.data.data.user))
+    localStorage.setItem('accessToken', r.data.data.token)
 
-    // Redirect to `to` query if exist or redirect to index route
+    // // Redirect to `to` query if exist or redirect to index route
     router.replace(route.query.to ? String(route.query.to) : '/')
   }).catch(e => {
-    const { errors: formErrors } = e.response.data
+    const { error: formErrors } = e.response.data
 
     errors.value = formErrors
     console.error(e.response.data)
   })
 }
-
-/*const login = () => {
-  axiosIns.post('login', {
-    email: email.value,
-    password: password.value,
-  }).then(r => {
-    console.log(r.data)
-
-    const { status, message, data } = r.data
-
-    localStorage.setItem('userAbilities', JSON.stringify(data))
-    ability.update(data)
-    localStorage.setItem('userData', JSON.stringify(data.user))
-    localStorage.setItem('accessToken', JSON.stringify(data.token))
-
-    // Redirect to `to` query if exist or redirect to index route
-    router.replace(route.query.to ? String(route.query.to) : '/')
-  }).catch(e => {
-    const { errors: formErrors } = e.response.data
-
-    errors.value = formErrors
-    console.error(e.response.data)
-  })
-}*/
 
 const onSubmit = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
