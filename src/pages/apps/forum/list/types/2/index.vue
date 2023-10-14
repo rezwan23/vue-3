@@ -187,7 +187,7 @@ const deleteUser = (id) => {
         <div class="d-flex align-center flex-wrap gap-4">
           <AppTextField
             v-model="searchQuery"
-            placeholder="Search User"
+            placeholder="Search"
             density="compact"
             style="width: 12.5rem"
           />
