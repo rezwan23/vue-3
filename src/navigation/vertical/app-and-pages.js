@@ -1,3 +1,4 @@
+
 export default [
   { heading: 'Apps & Pages' },
   {
@@ -9,12 +10,12 @@ export default [
     title: 'Forums',
     icon: { icon: 'tabler-ad-2' },
     children: [
-      { title: 'Type 1', to: 'apps-forum' },
-      { title: 'Medication', to: '' },
-      { title: 'Pediatric', to: '' },
-      { title: 'Doctors', to: '' },
-      { title: 'Setting in', to: '' },
-      { title: 'Region', to: '' },
+      { title: 'Vaccines', to: 'apps-forum-list-types-1' },
+      { title: 'Medication', to: 'apps-forum-list-types-2' },
+      { title: 'Pediatric', to: 'apps-forum-list-types-3' },
+      { title: 'Doctors', to: 'apps-forum-list-types-4' },
+      { title: 'Setting in', to: 'apps-forum-list-types-5' },
+      { title: 'Region', to: 'apps-forum-list-types-6' },
     ],
   },
   {
@@ -56,6 +57,7 @@ export default [
       { title: 'Add', to: 'apps-invoice-add' },
     ],
   },
+  */
   {
     title: 'User',
     icon: { icon: 'tabler-users' },
@@ -64,6 +66,7 @@ export default [
       { title: 'View', to: { name: 'apps-user-view-id', params: { id: 21 } } },
     ],
   },
+  /*
   {
     title: 'Roles & Permissions',
     icon: { icon: 'tabler-settings' },
