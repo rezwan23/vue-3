@@ -34,10 +34,6 @@ const headers = [
     key: "role",
   },
   {
-    title: "Topic Type",
-    key: "status",
-  },
-  {
     title: "Description",
     key: "plan",
   },
@@ -52,7 +48,7 @@ const headers = [
   },
 ];
 
-// 👉 Fetching users
+// 👉 Fetching posts
 const fetchUsers = () => {
   axios
     .get(`${store.state.apiUrl}/forum/posts/all?page=1&topic_type_id=1}`)
@@ -188,8 +184,8 @@ const deleteUser = (id) => {
 
         <VSpacer />
 
-        <!-- <div class="d-flex align-center flex-wrap gap-4">
-           👉 Search  
+        <div class="d-flex align-center flex-wrap gap-4">
+<!--           👉 Search  -->
           <AppTextField
             v-model="searchQuery"
             placeholder="Search User"
@@ -197,17 +193,17 @@ const deleteUser = (id) => {
             style="width: 12.5rem"
           />
 
-           👉 Add user button
-          <VSelect
-            v-model="selectedRole"
-            label="Select Role"
-            :items="roles"
-            density="compact"
-            clearable
-            clear-icon="tabler-x"
-            style="width: 10rem"
-          /> 
-        </div>-->
+          <!-- 👉 Add user button
+         <VSelect
+           v-model="selectedRole"
+           label="Select Role"
+           :items="roles"
+           density="compact"
+           clearable
+           clear-icon="tabler-x"
+           style="width: 10rem"
+         /> -->
+        </div>
       </VCardText>
 
       <VDivider />
@@ -350,13 +346,13 @@ const deleteUser = (id) => {
         <!-- Actions -->
         <template #item.actions="{ item }">
           <IconBtn>
-            <VIcon icon="tabler-edit" />
+            <VIcon icon="tabler-list-details" />
           </IconBtn>
-          <IconBtn @click="deleteUser(item.raw.id)">
+<!--          <IconBtn @click="deleteUser(item.raw.id)">
             <VIcon icon="tabler-trash" />
-          </IconBtn>
+          </IconBtn>-->
 
-          <VBtn
+<!--          <VBtn
             icon
             color="medium-emphasis"
             density="comfortable"
@@ -379,7 +375,7 @@ const deleteUser = (id) => {
                 </VListItem>
               </VList>
             </VMenu>
-          </VBtn>
+          </VBtn>-->
         </template>
       </VDataTableServer>
 
