@@ -234,7 +234,7 @@ const deleteUser = (id) => {
             >
               <VImg v-if="item.raw.user.image" :src="item.raw.user.image" />
             </VAvatar>
-            <span>{{ avatarText(item.raw.user.name) }}</span>
+            <span>{{ item.raw.user.name }}</span>
             <div class="d-flex flex-column">
               <h6 class="text-body-1 font-weight-medium">
                 <RouterLink
