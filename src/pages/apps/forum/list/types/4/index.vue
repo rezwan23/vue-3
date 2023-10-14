@@ -189,7 +189,7 @@ const deleteUser = (id) => {
         <VSpacer />
 
         <!-- <div class="d-flex align-center flex-wrap gap-4">
-           👉 Search  
+           👉 Search
           <AppTextField
             v-model="searchQuery"
             placeholder="Search User"
@@ -206,7 +206,7 @@ const deleteUser = (id) => {
             clearable
             clear-icon="tabler-x"
             style="width: 10rem"
-          /> 
+          />
         </div>-->
       </VCardText>
 

@@ -26,20 +26,24 @@ const options = ref({
 
 const headers = [
   {
+    title: "ID",
+    key: "id",
+  },
+  {
     title: "Posted By",
     key: "user",
   },
   {
     title: "Title",
-    key: "role",
+    key: "title",
   },
   {
     title: "Description",
-    key: "plan",
+    key: "description",
   },
   {
     title: "Total Comments",
-    key: "billing",
+    key: "comments",
   },
   {
     title: "Actions",
@@ -101,42 +105,8 @@ const roles = [
   },
 ];
 
-const resolveUserRoleVariant = (role) => {
-  const roleLowerCase = role.toLowerCase();
-  if (roleLowerCase === "subscriber")
-    return {
-      color: "primary",
-      icon: "tabler-user",
-    };
-  if (roleLowerCase === "author")
-    return {
-      color: "warning",
-      icon: "tabler-settings",
-    };
-  if (roleLowerCase === "maintainer")
-    return {
-      color: "success",
-      icon: "tabler-chart-donut",
-    };
-  if (roleLowerCase === "editor")
-    return {
-      color: "info",
-      icon: "tabler-pencil",
-    };
-  if (roleLowerCase === "admin")
-    return {
-      color: "error",
-      icon: "tabler-device-laptop",
-    };
-
-  return {
-    color: "primary",
-    icon: "tabler-user",
-  };
-};
-
 const getWordStr = (str) => {
-    return str.split(/\s+/).slice(0, 4).join(" ");
+    return str.split(/\s+/).slice(0, 6).join(" ");
 }
 
 const resolveUserStatusVariant = (stat) => {
@@ -185,7 +155,7 @@ const deleteUser = (id) => {
         <VSpacer />
 
         <div class="d-flex align-center flex-wrap gap-4">
-<!--           👉 Search  -->
+        <!--  👉 Search  -->
           <AppTextField
             v-model="searchQuery"
             placeholder="Search"
@@ -193,16 +163,6 @@ const deleteUser = (id) => {
             style="width: 12.5rem"
           />
 
-          <!-- 👉 Add user button
-         <VSelect
-           v-model="selectedRole"
-           label="Select Role"
-           :items="roles"
-           density="compact"
-           clearable
-           clear-icon="tabler-x"
-           style="width: 10rem"
-         /> -->
         </div>
       </VCardText>
 
@@ -248,56 +208,31 @@ const deleteUser = (id) => {
           </div>
         </template>
 
-        <!-- Role -->
-        <template #item.role="{ item }">
+        <template #item.id="{ item }">
+          <span class="text-capitalize font-weight-medium">{{
+              item.raw.id
+            }}</span>
+        </template>
+
+
+        <template #item.title="{ item }">
           <span class="text-capitalize font-weight-medium">{{
             item.raw.title
           }}</span>
         </template>
-        <!-- <template #item.role="{ item }">
-          <div class="d-flex align-center gap-4">
-            <VAvatar
-              size="30"
-              variant="tonal"
-              :color="resolveUserRoleVariant(item.raw.role).color"
-            >
-              <VIcon
-                size="20"
-                :icon="resolveUserRoleVariant(item.raw.role).icon"
-              />
-            </VAvatar>
-            <span class="text-capitalize">{{ item.raw.role }}</span>
-          </div>
-        </template> -->
 
         <!-- Plan -->
-        <template #item.plan="{ item }">
+        <template #item.description="{ item }">
           <span class="text-capitalize font-weight-medium">{{
             getWordStr(item.raw.description) + '...'
           }}</span>
         </template>
-        <template #item.billing="{ item }">
+        <template #item.comments="{ item }">
           <span class="text-capitalize font-weight-medium">{{
             item.raw.total_comments
           }}</span>
         </template>
 
-        <!-- Status -->
-        <template #item.status="{ item }">
-          <span class="text-capitalize font-weight-medium">{{
-            'Vaccines'
-          }}</span>
-        </template>
-        <!-- <template #item.status="{ item }">
-          <VChip
-            label
-            size="small"
-            class="text-capitalize"
-            :color="resolveUserStatusVariant(item.raw.status)"
-          >
-            {{ item.raw.status }}
-          </VChip>
-        </template> -->
 
         <template #bottom>
           <VDivider />
@@ -345,37 +280,10 @@ const deleteUser = (id) => {
 
         <!-- Actions -->
         <template #item.actions="{ item }">
-          <IconBtn>
-            <VIcon icon="tabler-list-details" />
+
+          <IconBtn :to="{ name: 'apps-invoice-preview-id', params: { id: item.raw.id } }">
+            <VIcon icon="tabler-eye" />
           </IconBtn>
-<!--          <IconBtn @click="deleteUser(item.raw.id)">
-            <VIcon icon="tabler-trash" />
-          </IconBtn>-->
-
-<!--          <VBtn
-            icon
-            color="medium-emphasis"
-            density="comfortable"
-            variant="text"
-          >
-            <VIcon size="24" icon="tabler-dots-vertical" />
-
-            <VMenu activator="parent">
-              <VList>
-                <VListItem
-                  :to="{
-                    name: 'apps-user-view-id',
-                    params: { id: item.raw.id },
-                  }"
-                >
-                  <VListItemTitle>View</VListItemTitle>
-                </VListItem>
-                <VListItem link>
-                  <VListItemTitle>Suspend</VListItemTitle>
-                </VListItem>
-              </VList>
-            </VMenu>
-          </VBtn>-->
         </template>
       </VDataTableServer>
 
