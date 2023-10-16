@@ -1,18 +1,11 @@
 <script setup>
 import { VDataTableServer } from "vuetify/labs/VDataTable";
 import { paginationMeta } from "@/@fake-db/utils";
-import AddNewUserDrawer from "@/views/apps/user/list/AddNewUserDrawer.vue";
-import { useUserListStore } from "@/views/apps/user/useUserListStore";
-import { avatarText } from "@core/utils/formatters";
 import axios from "axios";
 import { useStore } from "vuex";
 
 const store = useStore();
-const userListStore = useUserListStore();
 const searchQuery = ref("");
-const selectedRole = ref();
-const selectedPlan = ref();
-const selectedStatus = ref();
 const totalUsers = ref(0);
 const users = ref([]);
 
@@ -26,24 +19,24 @@ const options = ref({
 
 const headers = [
   {
+    title: "ID",
+    key: "id",
+  },
+  {
     title: "Posted By",
     key: "user",
   },
   {
     title: "Title",
-    key: "role",
-  },
-  {
-    title: "Topic Type",
-    key: "status",
+    key: "title",
   },
   {
     title: "Description",
-    key: "plan",
+    key: "description",
   },
   {
     title: "Total Comments",
-    key: "billing",
+    key: "comments",
   },
   {
     title: "Actions",
@@ -52,7 +45,7 @@ const headers = [
   },
 ];
 
-// 👉 Fetching users
+// 👉 Fetching posts
 const fetchUsers = () => {
   axios
     .get(`${store.state.apiUrl}/forum/posts/all?page=1&topic_type_id=6}`)
@@ -64,19 +57,6 @@ const fetchUsers = () => {
       options.value.itemsPerPage = data.data.per_page;
     })
     .catch((err) => console.log(err));
-  // userListStore.fetchUsers({
-  //   q: searchQuery.value,
-  //   status: selectedStatus.value,
-  //   plan: selectedPlan.value,
-  //   role: selectedRole.value,
-  //   options: options.value,
-  // }).then(response => {
-  //   users.value = response.data.users
-  //   totalUsers.value = response.data.totalUsers
-  //   options.value.page = response.data.page
-  // }).catch(error => {
-  //   console.error(error)
-  // })
 };
 
 watchEffect(fetchUsers);
@@ -105,68 +85,11 @@ const roles = [
   },
 ];
 
-const resolveUserRoleVariant = (role) => {
-  const roleLowerCase = role.toLowerCase();
-  if (roleLowerCase === "subscriber")
-    return {
-      color: "primary",
-      icon: "tabler-user",
-    };
-  if (roleLowerCase === "author")
-    return {
-      color: "warning",
-      icon: "tabler-settings",
-    };
-  if (roleLowerCase === "maintainer")
-    return {
-      color: "success",
-      icon: "tabler-chart-donut",
-    };
-  if (roleLowerCase === "editor")
-    return {
-      color: "info",
-      icon: "tabler-pencil",
-    };
-  if (roleLowerCase === "admin")
-    return {
-      color: "error",
-      icon: "tabler-device-laptop",
-    };
-
-  return {
-    color: "primary",
-    icon: "tabler-user",
-  };
-};
-
 const getWordStr = (str) => {
-    return str.split(/\s+/).slice(0, 4).join(" ");
+    return str.split(/\s+/).slice(0, 6).join(" ");
 }
 
-const resolveUserStatusVariant = (stat) => {
-  const statLowerCase = stat.toLowerCase();
-  if (statLowerCase === "pending") return "warning";
-  if (statLowerCase === "active") return "success";
-  if (statLowerCase === "inactive") return "secondary";
 
-  return "primary";
-};
-
-const isAddNewUserDrawerVisible = ref(false);
-
-const addNewUser = (userData) => {
-  userListStore.addUser(userData);
-
-  // refetch User
-  fetchUsers();
-};
-
-const deleteUser = (id) => {
-  userListStore.deleteUser(id);
-
-  // refetch User
-  fetchUsers();
-};
 </script>
 
 <template>
@@ -188,26 +111,16 @@ const deleteUser = (id) => {
 
         <VSpacer />
 
-        <!-- <div class="d-flex align-center flex-wrap gap-4">
-           👉 Search  
+        <div class="d-flex align-center flex-wrap gap-4">
+        <!--  👉 Search  -->
           <AppTextField
             v-model="searchQuery"
-            placeholder="Search User"
+            placeholder="Search"
             density="compact"
             style="width: 12.5rem"
           />
 
-           👉 Add user button
-          <VSelect
-            v-model="selectedRole"
-            label="Select Role"
-            :items="roles"
-            density="compact"
-            clearable
-            clear-icon="tabler-x"
-            style="width: 10rem"
-          /> 
-        </div>-->
+        </div>
       </VCardText>
 
       <VDivider />
@@ -235,73 +148,34 @@ const deleteUser = (id) => {
               <VImg v-if="item.raw.user.image" :src="item.raw.user.image" />
             </VAvatar>
             <span>{{ item.raw.user.name }}</span>
-            <div class="d-flex flex-column">
-              <h6 class="text-body-1 font-weight-medium">
-                <RouterLink
-                  :to="{
-                    name: 'apps-user-view-id',
-                    params: { id: item.raw.id },
-                  }"
-                  class="user-list-name"
-                >
-                  {{ item.raw.fullName }}
-                </RouterLink>
-              </h6>
-              <span class="text-sm text-disabled">{{ item.raw.email }}</span>
-            </div>
           </div>
         </template>
 
-        <!-- Role -->
-        <template #item.role="{ item }">
+        <template #item.id="{ item }">
+          <span class="text-capitalize font-weight-medium">{{
+              item.raw.id
+            }}</span>
+        </template>
+
+
+        <template #item.title="{ item }">
           <span class="text-capitalize font-weight-medium">{{
             item.raw.title
           }}</span>
         </template>
-        <!-- <template #item.role="{ item }">
-          <div class="d-flex align-center gap-4">
-            <VAvatar
-              size="30"
-              variant="tonal"
-              :color="resolveUserRoleVariant(item.raw.role).color"
-            >
-              <VIcon
-                size="20"
-                :icon="resolveUserRoleVariant(item.raw.role).icon"
-              />
-            </VAvatar>
-            <span class="text-capitalize">{{ item.raw.role }}</span>
-          </div>
-        </template> -->
 
         <!-- Plan -->
-        <template #item.plan="{ item }">
+        <template #item.description="{ item }">
           <span class="text-capitalize font-weight-medium">{{
             getWordStr(item.raw.description) + '...'
           }}</span>
         </template>
-        <template #item.billing="{ item }">
+        <template #item.comments="{ item }">
           <span class="text-capitalize font-weight-medium">{{
             item.raw.total_comments
           }}</span>
         </template>
 
-        <!-- Status -->
-        <template #item.status="{ item }">
-          <span class="text-capitalize font-weight-medium">{{
-            'Vaccines'
-          }}</span>
-        </template>
-        <!-- <template #item.status="{ item }">
-          <VChip
-            label
-            size="small"
-            class="text-capitalize"
-            :color="resolveUserStatusVariant(item.raw.status)"
-          >
-            {{ item.raw.status }}
-          </VChip>
-        </template> -->
 
         <template #bottom>
           <VDivider />
@@ -349,48 +223,15 @@ const deleteUser = (id) => {
 
         <!-- Actions -->
         <template #item.actions="{ item }">
-          <IconBtn>
-            <VIcon icon="tabler-edit" />
-          </IconBtn>
-          <IconBtn @click="deleteUser(item.raw.id)">
-            <VIcon icon="tabler-trash" />
-          </IconBtn>
 
-          <VBtn
-            icon
-            color="medium-emphasis"
-            density="comfortable"
-            variant="text"
-          >
-            <VIcon size="24" icon="tabler-dots-vertical" />
-
-            <VMenu activator="parent">
-              <VList>
-                <VListItem
-                  :to="{
-                    name: 'apps-user-view-id',
-                    params: { id: item.raw.id },
-                  }"
-                >
-                  <VListItemTitle>View</VListItemTitle>
-                </VListItem>
-                <VListItem link>
-                  <VListItemTitle>Suspend</VListItemTitle>
-                </VListItem>
-              </VList>
-            </VMenu>
-          </VBtn>
+          <IconBtn :to="{ name: 'apps-forum-view-id', params: { id: item.raw.id } }">
+            <VIcon icon="tabler-eye" />
+          </IconBtn>
         </template>
       </VDataTableServer>
 
       <!-- SECTION -->
     </VCard>
-
-    <!-- 👉 Add New User -->
-    <AddNewUserDrawer
-      v-model:isDrawerOpen="isAddNewUserDrawerVisible"
-      @user-data="addNewUser"
-    />
   </section>
 </template>
 
