@@ -1,4 +1,5 @@
 import { createStore } from 'vuex'
+import router from './router'
 
 import axios from 'axios'
 
@@ -38,7 +39,8 @@ const store = createStore({
             localStorage.removeItem('userData')
             localStorage.removeItem('accessToken')
             localStorage.removeItem('userAbilities')
-            window.location.replace(window.location.origin + '/login')
+            // window.location.replace(window.location.origin + '/login')
+            router.push('/login');
         },
     }
 })

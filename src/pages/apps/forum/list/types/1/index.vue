@@ -1,18 +1,11 @@
 <script setup>
 import { VDataTableServer } from "vuetify/labs/VDataTable";
 import { paginationMeta } from "@/@fake-db/utils";
-import AddNewUserDrawer from "@/views/apps/user/list/AddNewUserDrawer.vue";
-import { useUserListStore } from "@/views/apps/user/useUserListStore";
-import { avatarText } from "@core/utils/formatters";
 import axios from "axios";
 import { useStore } from "vuex";
 
 const store = useStore();
-const userListStore = useUserListStore();
 const searchQuery = ref("");
-const selectedRole = ref();
-const selectedPlan = ref();
-const selectedStatus = ref();
 const totalUsers = ref(0);
 const users = ref([]);
 
@@ -64,19 +57,6 @@ const fetchUsers = () => {
       options.value.itemsPerPage = data.data.per_page;
     })
     .catch((err) => console.log(err));
-  // userListStore.fetchUsers({
-  //   q: searchQuery.value,
-  //   status: selectedStatus.value,
-  //   plan: selectedPlan.value,
-  //   role: selectedRole.value,
-  //   options: options.value,
-  // }).then(response => {
-  //   users.value = response.data.users
-  //   totalUsers.value = response.data.totalUsers
-  //   options.value.page = response.data.page
-  // }).catch(error => {
-  //   console.error(error)
-  // })
 };
 
 watchEffect(fetchUsers);
@@ -109,30 +89,7 @@ const getWordStr = (str) => {
     return str.split(/\s+/).slice(0, 6).join(" ");
 }
 
-const resolveUserStatusVariant = (stat) => {
-  const statLowerCase = stat.toLowerCase();
-  if (statLowerCase === "pending") return "warning";
-  if (statLowerCase === "active") return "success";
-  if (statLowerCase === "inactive") return "secondary";
 
-  return "primary";
-};
-
-const isAddNewUserDrawerVisible = ref(false);
-
-const addNewUser = (userData) => {
-  userListStore.addUser(userData);
-
-  // refetch User
-  fetchUsers();
-};
-
-const deleteUser = (id) => {
-  userListStore.deleteUser(id);
-
-  // refetch User
-  fetchUsers();
-};
 </script>
 
 <template>
@@ -191,20 +148,6 @@ const deleteUser = (id) => {
               <VImg v-if="item.raw.user.image" :src="item.raw.user.image" />
             </VAvatar>
             <span>{{ item.raw.user.name }}</span>
-            <div class="d-flex flex-column">
-              <h6 class="text-body-1 font-weight-medium">
-                <RouterLink
-                  :to="{
-                    name: 'apps-user-view-id',
-                    params: { id: item.raw.id },
-                  }"
-                  class="user-list-name"
-                >
-                  {{ item.raw.fullName }}
-                </RouterLink>
-              </h6>
-              <span class="text-sm text-disabled">{{ item.raw.email }}</span>
-            </div>
           </div>
         </template>
 
@@ -281,7 +224,7 @@ const deleteUser = (id) => {
         <!-- Actions -->
         <template #item.actions="{ item }">
 
-          <IconBtn :to="{ name: 'apps-invoice-preview-id', params: { id: item.raw.id } }">
+          <IconBtn :to="{ name: 'apps-forum-view-id', params: { id: item.raw.id } }">
             <VIcon icon="tabler-eye" />
           </IconBtn>
         </template>
@@ -289,12 +232,6 @@ const deleteUser = (id) => {
 
       <!-- SECTION -->
     </VCard>
-
-    <!-- 👉 Add New User -->
-    <AddNewUserDrawer
-      v-model:isDrawerOpen="isAddNewUserDrawerVisible"
-      @user-data="addNewUser"
-    />
   </section>
 </template>
 
