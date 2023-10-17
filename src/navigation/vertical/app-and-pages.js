@@ -27,7 +27,15 @@ export default [
     title: 'Users',
     icon: { icon: 'tabler-users' },
     to: 'apps-user-list',
-  }
+  },
+  {
+    title: 'News',
+    icon: { icon: 'tabler-article' },
+    children: [
+      { title: 'All News', to: 'apps-news-list' },
+    ],
+  },
+
 
 
 
