@@ -19,6 +19,11 @@ export default [
     ],
   },
   {
+    title: 'Immunization Record',
+    icon: { icon: 'tabler-archive' },
+    to: 'apps-immunization-list',
+  },
+  {
     title: 'Users',
     icon: { icon: 'tabler-users' },
     to: 'apps-user-list',

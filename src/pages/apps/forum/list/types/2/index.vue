@@ -48,7 +48,7 @@ const headers = [
 // 👉 Fetching posts
 const fetchUsers = () => {
   axios
-    .get(`${store.state.apiUrl}/forum/posts/all?page=1&topic_type_id=2}`)
+    .get(`${store.state.apiUrl}/forum/posts/all?page=${options.value.page}&topic_type_id=2}`)
     .then(({ data }) => {
       console.log(data.data);
       users.value = data.data.posts;
@@ -61,29 +61,7 @@ const fetchUsers = () => {
 
 watchEffect(fetchUsers);
 
-// 👉 search filters
-const roles = [
-  {
-    title: "Admin",
-    value: "admin",
-  },
-  {
-    title: "Author",
-    value: "author",
-  },
-  {
-    title: "Editor",
-    value: "editor",
-  },
-  {
-    title: "Maintainer",
-    value: "maintainer",
-  },
-  {
-    title: "Subscriber",
-    value: "subscriber",
-  },
-];
+
 
 const getWordStr = (str) => {
     return str.split(/\s+/).slice(0, 6).join(" ");
@@ -96,18 +74,6 @@ const getWordStr = (str) => {
   <section>
     <VCard>
       <VCardText class="d-flex flex-wrap gap-4">
-        <!-- <AppSelect
-          :model-value="options.itemsPerPage"
-          :items="[
-            { value: 10, title: '10' },
-            { value: 25, title: '25' },
-            { value: 50, title: '50' },
-            { value: 100, title: '100' },
-            { value: -1, title: 'All' },
-          ]"
-          style="width: 5rem"
-          @update:model-value="options.itemsPerPage = parseInt($event, 10)"
-        /> -->
 
         <VSpacer />
 

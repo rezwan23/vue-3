@@ -2,32 +2,15 @@
 import axios from 'axios';
 import { useStore } from "vuex";
 
-const moreList = [
-    {
-        title: 'View All',
-        value: 'View All',
-    },
-]
 
 const store = useStore()
 
 const post = ref({})
 const route = useRoute()
 const isPost = ref(0)
-const isAllComments = ref(1)
 
 
-
-const commentsToggle = () => {
-    if(isAllComments.value == 0){
-        isAllComments.value = 1
-    }else{
-        isAllComments.value = 0
-    }
-}
-
-
-const fetcPost = () => {
+const fetchPost = () => {
     axios.get(`${store.state.apiUrl}/forum/posts?post_id=${route.params.id}`).then(({ data }) => {
         post.value = data.data
         console.log(data.data)
@@ -37,7 +20,7 @@ const fetcPost = () => {
     })
 }
 
-watchEffect(fetcPost);
+watchEffect(fetchPost);
 
 </script>
 
@@ -69,18 +52,7 @@ watchEffect(fetcPost);
             </VCard>
         </VCol>
         <VCol>
-            <VCard :title="isAllComments ? 'Comments' : 'Recent Comments'">
-                <!-- <template #append>
-                    <div class="me-n2">
-                        <VBtn v-if="!isAllComments" @click="commentsToggle" variant="outlined" color="warning">
-                            Show All Comments
-                        </VBtn>
-                        <VBtn v-else @click="commentsToggle" variant="outlined" color="info">
-                            Show Recent Comments
-                        </VBtn>
-                    </div>
-                </template> -->
-
+            <VCard :title=" 'Comments'">
                 <VCardText>
                     <VTimeline side="end" align="start" truncate-line="both" density="compact"
                         class="v-timeline-density-compact">

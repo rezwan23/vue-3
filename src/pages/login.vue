@@ -12,6 +12,7 @@ import authV2MaskDark from '@images/pages/misc-mask-dark.png'
 import authV2MaskLight from '@images/pages/misc-mask-light.png'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
+import { useStore } from 'vuex'
 import {
   emailValidator,
   requiredValidator,
@@ -23,6 +24,7 @@ const isPasswordVisible = ref(false)
 const route = useRoute()
 const router = useRouter()
 const ability = useAppAbility()
+const store = useStore()
 
 const errors = ref({
   email: undefined,
@@ -35,12 +37,12 @@ const password = ref('password')
 const rememberMe = ref(false)
 
 
-const userAbilities = '[{"actiapiUrlon":"manage","subject":"all"}]';
+const userAbilities = '[{"actiapiUrlon":"manage","subject":"all"}]'
 
 
 
 const login = () => {
-  axios.post('https://apitest.myhealthlog.in/admin/api/v1/login', {
+  axios.post(`${store.state.apiUrl}/login`, {
     email: email.value,
     password: password.value,
   }).then(r => {

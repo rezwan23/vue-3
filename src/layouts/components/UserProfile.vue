@@ -4,7 +4,6 @@ import { initialAbility } from "@/plugins/casl/ability";
 import { useAppAbility } from "@/plugins/casl/useAppAbility";
 import { useStore } from "vuex";
 
-const router = useRouter();
 const ability = useAppAbility();
 const userData = JSON.parse(localStorage.getItem("userData") || "null");
 const store = useStore();
@@ -12,19 +11,6 @@ const store = useStore();
 const logout = () => {
   ability.update(initialAbility);
   store.commit("removeSession");
-  // Remove "userData" from localStorage
-  // localStorage.removeItem('userData')
-
-  // // Remove "accessToken" from localStorage
-  // localStorage.removeItem('accessToken')
-
-  // // Remove "userAbilities" from localStorage
-  // localStorage.removeItem('userAbilities')
-
-  // // Reset ability to initial ability
-  // ability.update(initialAbility)
-
-  // window.location.replace(window.location.origin + '/login')
 };
 
 const userProfileList = [
