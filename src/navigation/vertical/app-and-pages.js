@@ -27,12 +27,7 @@ export default [
     title: 'Users',
     icon: { icon: 'tabler-users' },
     to: 'apps-user-list',
-  },
-  {
-    title: 'Immunization Records',
-    icon: { icon: 'tabler-address-book' },
-    to: '',
-  },
+  }
 
 
 
@@ -63,14 +58,14 @@ export default [
     ],
   },
   */
-  {
-    title: 'User',
-    icon: { icon: 'tabler-users' },
-    children: [
-      { title: 'List', to: 'apps-user-list' },
-      { title: 'View', to: { name: 'apps-user-view-id', params: { id: 21 } } },
-    ],
-  },
+  // {
+  //   title: 'User',
+  //   icon: { icon: 'tabler-users' },
+  //   children: [
+  //     { title: 'List', to: 'apps-user-list' },
+  //     { title: 'View', to: { name: 'apps-user-view-id', params: { id: 21 } } },
+  //   ],
+  // },
   /*
   {
     title: 'Roles & Permissions',
