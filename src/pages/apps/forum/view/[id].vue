@@ -1,9 +1,6 @@
 <script setup>
-import avatar8 from '@images/avatars/avatar-8.png'
 import axios from 'axios';
 import { useStore } from "vuex";
-import avatar1 from '@images/avatars/avatar-1.png'
-import avatar2 from '@images/avatars/avatar-2.png'
 
 const moreList = [
     {
