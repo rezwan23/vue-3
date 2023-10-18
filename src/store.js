@@ -27,12 +27,19 @@ const store = createStore({
   state() {
     return {
       apiUrl: "https://apitest.myhealthlog.in/admin/api/v1",
+      isRequest : false
     };
   },
   methods: {
     getTypes() {},
   },
   mutations: {
+    requestDone(state){
+      state.isRequest = false
+    },
+    requestStarted(state){
+      state.isRequest = true
+    },
     removeSession(state) {
       localStorage.removeItem("userData");
       localStorage.removeItem("accessToken");

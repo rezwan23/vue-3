@@ -6,6 +6,7 @@ import { useStore } from "vuex"
 import moment from 'moment'
 import { areYouSure, toastMessage } from '../../../../swal'
 import _ from 'lodash'
+import Loader from '../../../../Loader.vue'
 
 
 const store = useStore()
@@ -110,6 +111,7 @@ const updateNews = () => {
 
 // 👉 Fetching News
 const fetchNews = () => {
+  store.commit('requestStarted')
   axios
     .get(`${store.state.apiUrl}/news?page=${options.value.page}&keywords=${searchQuery.value}`)
     .then(({ data }) => {
@@ -117,11 +119,14 @@ const fetchNews = () => {
       totalNews.value = data.data.total_items;
       options.value.page = data.data.current_page;
       options.value.itemsPerPage = data.data.per_page;
+      store.commit('requestDone')
     })
     .catch((err) => {
       if (err.response.status == 404) {
         toastMessage(err.response.data.message, 'error')
+       
       }
+      store.commit('requestDone')
     });
 };
 
@@ -137,6 +142,7 @@ const getWordStr = (str) => {
 
 <template>
   <section>
+    <Loader/>
     <VDialog v-model="isDialogVisible" max-width="600">
 
       <!-- Dialog close btn -->

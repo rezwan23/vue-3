@@ -6,6 +6,7 @@ import { useStore } from "vuex"
 import moment from 'moment'
 import _ from 'lodash'
 import { toastMessage } from '../../../../swal'
+import Loader from '../../../../Loader.vue'
 
 
 const store = useStore()
@@ -64,6 +65,7 @@ const headers = [
 
 // 👉 Fetching posts
 const fetchUsers = () => {
+  store.commit('requestStarted')
   axios
     .get(`${store.state.apiUrl}/users?page=${options.value.page}&keywords=${searchQuery.value}`)
     .then(({ data }) => {
@@ -71,11 +73,13 @@ const fetchUsers = () => {
       totalUsers.value = data.data.total_items;
       options.value.page = data.data.current_page;
       options.value.itemsPerPage = data.data.per_page;
+      store.commit('requestDone')
     })
     .catch((err) =>{
       if(err.response.status == 404){
         toastMessage(err.response.data.message, 'error')
       }
+      store.commit('requestDone')
     });
 };
 
@@ -91,6 +95,7 @@ const getWordStr = (str) => {
 
 <template>
   <section>
+    <Loader/>
     <VCard>
       <VCardText class="d-flex flex-wrap gap-4">
 
