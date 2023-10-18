@@ -6,17 +6,22 @@ export default [
     icon: { icon: 'tabler-smart-home' },
     to: 'dashboards-ecommerce',
   },
+  // {
+  //   title: 'Forums',
+  //   icon: { icon: 'tabler-ad-2' },
+  //   children: [
+  //     { title: 'Vaccines', to: 'apps-forum-list-types-1' },
+  //     { title: 'Medication', to: 'apps-forum-list-types-2' },
+  //     { title: 'Pediatric', to: 'apps-forum-list-types-3' },
+  //     { title: 'Doctors', to: 'apps-forum-list-types-4' },
+  //     { title: 'Setting in', to: 'apps-forum-list-types-5' },
+  //     { title: 'Region', to: 'apps-forum-list-types-6' },
+  //   ],
+  // },
   {
     title: 'Forums',
-    icon: { icon: 'tabler-ad-2' },
-    children: [
-      { title: 'Vaccines', to: 'apps-forum-list-types-1' },
-      { title: 'Medication', to: 'apps-forum-list-types-2' },
-      { title: 'Pediatric', to: 'apps-forum-list-types-3' },
-      { title: 'Doctors', to: 'apps-forum-list-types-4' },
-      { title: 'Setting in', to: 'apps-forum-list-types-5' },
-      { title: 'Region', to: 'apps-forum-list-types-6' },
-    ],
+    icon: { icon: 'tabler-archive' },
+    to: 'apps-forum-list',
   },
   {
     title: 'Immunization Record',
