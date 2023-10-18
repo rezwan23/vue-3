@@ -1,15 +1,18 @@
 <script setup>
-import { VDataTableServer } from "vuetify/labs/VDataTable";
-import { paginationMeta } from "@/@fake-db/utils";
-import axios from "axios";
-import { useStore } from "vuex";
-import moment from 'moment';
+import { VDataTableServer } from "vuetify/labs/VDataTable"
+import { paginationMeta } from "@/@fake-db/utils"
+import axios from "axios"
+import { useStore } from "vuex"
+import moment from 'moment'
+import _ from 'lodash'
+import { toastMessage } from '../../../../swal'
 
 
-const store = useStore();
-const searchQuery = ref("");
-const totalUsers = ref(0);
-const users = ref([]);
+const store = useStore()
+const searchQuery = ref("")
+const search = ref("")
+const totalUsers = ref(0)
+const users = ref([])
 
 const options = ref({
   page: 1,
@@ -18,6 +21,14 @@ const options = ref({
   groupBy: [],
   search: undefined,
 });
+
+const setSearchQuery = () => {
+  searchQuery.value = search.value
+}
+
+
+const debounceSearchQuery = _.debounce(setSearchQuery, 500)
+
 
 
 const formatDate = (dateStr, format = 'LLL') => {
@@ -54,15 +65,18 @@ const headers = [
 // 👉 Fetching posts
 const fetchUsers = () => {
   axios
-    .get(`${store.state.apiUrl}/users?page=${options.value.page}`)
+    .get(`${store.state.apiUrl}/users?page=${options.value.page}&keywords=${searchQuery.value}`)
     .then(({ data }) => {
-      console.log(data.data);
       users.value = data.data.users;
       totalUsers.value = data.data.total_items;
       options.value.page = data.data.current_page;
       options.value.itemsPerPage = data.data.per_page;
     })
-    .catch((err) => console.log(err));
+    .catch((err) =>{
+      if(err.response.status == 404){
+        toastMessage(err.response.data.message, 'error')
+      }
+    });
 };
 
 watchEffect(fetchUsers);
@@ -85,10 +99,11 @@ const getWordStr = (str) => {
         <div class="d-flex align-center flex-wrap gap-4">
         <!--  👉 Search  -->
           <AppTextField
-            v-model="searchQuery"
+            v-model="search"
             placeholder="Search"
             density="compact"
             style="width: 12.5rem"
+            @input="debounceSearchQuery"
           />
 
         </div>

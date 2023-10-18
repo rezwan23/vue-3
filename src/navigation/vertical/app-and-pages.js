@@ -38,6 +38,7 @@ export default [
     icon: { icon: 'tabler-article' },
     children: [
       { title: 'All News', to: 'apps-news-list' },
+      { title: 'Create News', to: 'apps-news-create' },
     ],
   },
 

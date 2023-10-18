@@ -10,17 +10,20 @@ const route = useRoute()
 const isPost = ref(0)
 
 
+
+onMounted(() => {
+  fetchPost()
+})
+
 const fetchPost = () => {
     axios.get(`${store.state.apiUrl}/forum/posts?post_id=${route.params.id}`).then(({ data }) => {
         post.value = data.data
-        console.log(data.data)
         isPost.value = 1
     }).catch(err => {
         console.log(err)
     })
 }
 
-watchEffect(fetchPost);
 
 </script>
 

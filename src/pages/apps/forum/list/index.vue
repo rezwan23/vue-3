@@ -1,14 +1,17 @@
 <script setup>
-import { VDataTableServer } from "vuetify/labs/VDataTable";
-import { paginationMeta } from "@/@fake-db/utils";
-import axios from "axios";
-import { useStore } from "vuex";
+import { VDataTableServer } from "vuetify/labs/VDataTable"
+import { paginationMeta } from "@/@fake-db/utils"
+import axios from "axios"
+import { useStore } from "vuex"
+import _ from 'lodash'
+import { toastMessage } from '../../../../swal'
 
 
 const store = useStore()
 const searchQuery = ref("")
-const totalUsers = ref(0)
-const users = ref([])
+const search = ref("")
+const totalPosts = ref(0)
+const posts = ref([])
 const typeId = ref(1)
 const forumTypes = ref([])
 const types = ref([])
@@ -20,6 +23,13 @@ const options = ref({
   groupBy: [],
   search: undefined,
 });
+
+const setSearchQuery = () => {
+  searchQuery.value = search.value
+}
+
+
+const debounceSearchQuery = _.debounce(setSearchQuery, 500)
 
 const headers = [
   {
@@ -60,9 +70,12 @@ const getTypes = () => {
       forumTypes.value = data.data
       
       let arr = []
+      let ind = 0;
       data.data.forEach(function (item) {
-        var x = item.id;
-        
+        if(ind == 0){
+          typeId.value = item.id
+          ind++
+        }
         arr.push({value : item.id, title : item.name})
       })  
       types.value = arr
@@ -71,24 +84,28 @@ const getTypes = () => {
 }
 
 // 👉 Fetching posts
-const fetchUsers = () => {
+const fetchPosts = () => {
   axios
-    .get(`${store.state.apiUrl}/forum/posts/all?page=${options.value.page}&topic_type_id=${typeId.value}`)
+    .get(`${store.state.apiUrl}/forum/posts/all?page=${options.value.page}&topic_type_id=${typeId.value}&keywords=${searchQuery.value}`)
     .then(({ data }) => {
-      console.log(data.data);
-      users.value = data.data.posts;
-      totalUsers.value = data.data.total_items;
-      options.value.page = data.data.current_page;
-      options.value.itemsPerPage = data.data.per_page;
+      posts.value = data.data.posts
+      totalPosts.value = data.data.total_items
+      options.value.page = data.data.current_page
+      options.value.itemsPerPage = data.data.per_page
     })
-    .catch((err) => console.log(err));
+    .catch((err) =>  {
+      if(err.response.status == 404){
+        toastMessage(err.response.data.message, 'error')
+      }
+      
+    })
 };
 
-watchEffect(fetchUsers);
+watchEffect(fetchPosts)
 
 
 const getWordStr = (str) => {
-    return str.split(/\s+/).slice(0, 6).join(" ");
+    return str.split(/\s+/).slice(0, 6).join(" ")
 }
 
 
@@ -111,7 +128,8 @@ const getWordStr = (str) => {
         <div class="d-flex align-center flex-wrap gap-4">
           <!--  👉 Search  -->
           <AppTextField
-            v-model="searchQuery"
+            v-model="search"
+            @input="debounceSearchQuery"
             placeholder="Search"
             density="compact"
             style="width: 12.5rem"
@@ -125,8 +143,8 @@ const getWordStr = (str) => {
       <VDataTableServer
         v-model:items-per-page="options.itemsPerPage"
         v-model:page="options.page"
-        :items="users"
-        :items-length="totalUsers"
+        :items="posts"
+        :items-length="totalPosts"
         :headers="headers"
         class="text-no-wrap"
         @update:options="options = $event"
@@ -178,16 +196,16 @@ const getWordStr = (str) => {
             class="d-flex align-center justify-sm-space-between justify-center flex-wrap gap-3 pa-5 pt-3"
           >
             <p class="text-sm text-disabled mb-0">
-              {{ paginationMeta(options, totalUsers) }}
+              {{ paginationMeta(options, totalPosts) }}
             </p>
 
             <VPagination
               v-model="options.page"
-              :length="Math.ceil(totalUsers / options.itemsPerPage)"
+              :length="Math.ceil(totalPosts / options.itemsPerPage)"
               :total-visible="
                 $vuetify.display.xs
                   ? 1
-                  : Math.ceil(totalUsers / options.itemsPerPage)
+                  : Math.ceil(totalPosts / options.itemsPerPage)
               "
             >
               <template #prev="slotProps">
