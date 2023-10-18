@@ -52,6 +52,7 @@ const login = () => {
     ability.update(JSON.parse(userAbilities));
     localStorage.setItem('userData', JSON.stringify(r.data.data.user))
     localStorage.setItem('accessToken', r.data.data.token)
+    store.commit('setUser', {email :email.value, password : password.value})
 
     // // Redirect to `to` query if exist or redirect to index route
     router.replace(route.query.to ? String(route.query.to) : '/')

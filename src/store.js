@@ -27,7 +27,11 @@ const store = createStore({
   state() {
     return {
       apiUrl: "https://apitest.myhealthlog.in/admin/api/v1",
-      isRequest : false
+      isRequest : false,
+      userData : {
+        email : undefined,
+        password : undefined
+      }
     };
   },
   methods: {
@@ -40,10 +44,18 @@ const store = createStore({
     requestStarted(state){
       state.isRequest = true
     },
+    setUser(state, userData){
+      state.userData.email = userData.email
+      state.userData.password = userData.password
+    },
     removeSession(state) {
       localStorage.removeItem("userData");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("userAbilities");
+      state.userData = {
+        email : undefined,
+        password : undefined
+      }
       router.push("/login");
     },
   },

@@ -149,7 +149,7 @@ const getWordStr = (str) => {
       <DialogCloseBtn @click="isDialogVisible = !isDialogVisible" />
 
       <!-- Dialog Content -->
-      <VCard title="User Profile">
+      <VCard title="Update News">
         <VCardText>
           <VRow>
             <VCol cols="12">
