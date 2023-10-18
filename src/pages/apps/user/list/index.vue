@@ -3,17 +3,19 @@ import { VDataTableServer } from "vuetify/labs/VDataTable"
 import { paginationMeta } from "@/@fake-db/utils"
 import axios from "axios"
 import { useStore } from "vuex"
-import moment from 'moment'
 import _ from 'lodash'
 import { toastMessage } from '../../../../swal'
 import Loader from '../../../../Loader.vue'
+import Children from './children.vue'
 
 
 const store = useStore()
 const searchQuery = ref("")
+const isDialogVisible = ref(false)
 const search = ref("")
 const totalUsers = ref(0)
 const users = ref([])
+const selectedChildren = ref([])
 
 const options = ref({
   page: 1,
@@ -31,10 +33,6 @@ const setSearchQuery = () => {
 const debounceSearchQuery = _.debounce(setSearchQuery, 500)
 
 
-
-const formatDate = (dateStr, format = 'LLL') => {
-  return moment(dateStr).format(format)
-}
 
 const headers = [
   {
@@ -62,6 +60,11 @@ const headers = [
     key: "children",
   }
 ];
+
+const handleClick = (itm, {item : raw}) => {
+  selectedChildren.value = raw.children
+  isDialogVisible.value = true
+}
 
 // 👉 Fetching posts
 const fetchUsers = () => {
@@ -96,6 +99,9 @@ const getWordStr = (str) => {
 <template>
   <section>
     <Loader/>
+    <VDialog v-model="isDialogVisible" max-width="800">
+      <Children :children="selectedChildren"/>
+    </VDialog>
     <VCard>
       <VCardText class="d-flex flex-wrap gap-4">
 
@@ -125,6 +131,7 @@ const getWordStr = (str) => {
         :headers="headers"
         class="text-no-wrap"
         @update:options="options = $event"
+        @click:row="handleClick"
       >
         <!-- User -->
         <template #item.image="{ item }">
