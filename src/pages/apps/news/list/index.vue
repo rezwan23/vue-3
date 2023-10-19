@@ -41,7 +41,6 @@ const formatDate = (dateStr, format = 'LLL') => {
 
 const getUpdateForm = ({ raw }) => {
   isDialogVisible.value = true
-  console.log(raw)
   title.value = raw.title
   description.value = raw.description
   id.value = raw.id
@@ -53,7 +52,7 @@ const deleteNews = (id) => {
       .then(res => {
         fetchNews()
       }).catch(err => {
-        console.log(err)
+        toastMessage(err.response.data.message)
       })
   }, () => {
     console.log('no')

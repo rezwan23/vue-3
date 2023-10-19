@@ -45,8 +45,7 @@ const store = createStore({
       state.isRequest = true
     },
     setUser(state, userData){
-      state.userData.email = userData.email
-      state.userData.password = userData.password
+      state.userData = userData
     },
     removeSession(state) {
       localStorage.removeItem("userData");

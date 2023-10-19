@@ -4,6 +4,7 @@ import { paginationMeta } from "@/@fake-db/utils";
 import axios from "axios";
 import { useStore } from "vuex";
 import moment from 'moment';
+import { toastMessage } from '@/swal';
 
 
 const store = useStore();
@@ -69,13 +70,14 @@ const fetchUsers = () => {
   axios
     .get(`${store.state.apiUrl}/immunization-record?page=${options.value.page}`)
     .then(({ data }) => {
-      console.log(data.data);
       users.value = data.data.records;
       totalUsers.value = data.data.total_items;
       options.value.page = data.data.current_page;
       options.value.itemsPerPage = data.data.per_page;
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      toastMessage(err.response.data.message, 'error')
+    });
 };
 
 watchEffect(fetchUsers);

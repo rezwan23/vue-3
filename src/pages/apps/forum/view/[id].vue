@@ -1,6 +1,7 @@
 <script setup>
 import axios from 'axios';
 import { useStore } from "vuex";
+import { toastMessage } from '@/swal';
 
 
 const store = useStore()
@@ -24,7 +25,7 @@ const fetchPost = () => {
   }).catch(err => {
     console.log(err)
     store.commit('requestDone')
-
+    toastMessage(err.response.message, 'error')
   })
 }
 
@@ -32,7 +33,6 @@ const fetchPost = () => {
 </script>
 
 <template>
-  <Loader />
   <VRow v-if="isPost">
     <VCol :key="'tabler-ad-2'" cols="12" md="12">
       <VCard :color="'#007BB6'">

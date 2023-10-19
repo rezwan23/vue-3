@@ -81,7 +81,9 @@ const getTypes = () => {
       })
       types.value = arr
     })
-    .catch((err) => console.log(err));
+    .catch((err) =>{
+      toastMessage(err.response.data.message, 'error')
+    });
 }
 
 // 👉 Fetching posts
