@@ -20,6 +20,11 @@ const options = ref({
 });
 
 
+const calculateAge = (dob) => {
+   return moment().diff(dob, 'years', true).toFixed(1)
+}
+
+
 const formatDate = (dateStr, format = 'LLL') => {
   return moment(dateStr).format(format)
 }
@@ -86,6 +91,9 @@ const getWordStr = (str) => {
 <template>
   <section>
     <VCard>
+const calculateAge = (dob) => {
+   return moment().diff(dob, 'years', true).toFixed(1)
+}
       <VCardText class="d-flex flex-wrap gap-4">
 
         <VSpacer />
@@ -132,7 +140,7 @@ const getWordStr = (str) => {
                   {{ item.raw.child.name }}
                
               </h6>
-              <span class="text-sm text-disabled">DOB : {{ formatDate(item.raw.child.dob, 'MMM Do YYYY') }}</span>
+              <span class="text-sm text-disabled">Age : {{ calculateAge(item.raw.child.dob) }} Years</span>
             </div>
           </div>
         </template>
