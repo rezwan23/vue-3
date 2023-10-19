@@ -91,9 +91,6 @@ const getWordStr = (str) => {
 <template>
   <section>
     <VCard>
-const calculateAge = (dob) => {
-   return moment().diff(dob, 'years', true).toFixed(1)
-}
       <VCardText class="d-flex flex-wrap gap-4">
 
         <VSpacer />
