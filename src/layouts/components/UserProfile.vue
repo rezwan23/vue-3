@@ -3,28 +3,23 @@ import { PerfectScrollbar } from "vue3-perfect-scrollbar";
 import { initialAbility } from "@/plugins/casl/ability";
 import { useAppAbility } from "@/plugins/casl/useAppAbility";
 import { useStore } from "vuex";
+import axios from "axios";
 
-const router = useRouter();
 const ability = useAppAbility();
 const userData = JSON.parse(localStorage.getItem("userData") || "null");
 const store = useStore();
 
 const logout = () => {
-  ability.update(initialAbility);
-  store.commit("removeSession");
-  // Remove "userData" from localStorage
-  // localStorage.removeItem('userData')
+  axios.post(`${store.state.apiUrl}/logout`, {
+    email: store.state.userData.email,
+    password: store.state.userData.password
+  }).then(res => {
+    ability.update(initialAbility)
+    store.commit("removeSession")
+  }).catch( err => {
+    console.log(err)
+  })
 
-  // // Remove "accessToken" from localStorage
-  // localStorage.removeItem('accessToken')
-
-  // // Remove "userAbilities" from localStorage
-  // localStorage.removeItem('userAbilities')
-
-  // // Reset ability to initial ability
-  // ability.update(initialAbility)
-
-  // window.location.replace(window.location.origin + '/login')
 };
 
 const userProfileList = [
@@ -90,19 +85,9 @@ const userProfileList = [
 </script>
 
 <template>
-  <VBadge
-    dot
-    bordered
-    location="bottom right"
-    offset-x="3"
-    offset-y="3"
-    color="success"
-  >
-    <VAvatar
-      class="cursor-pointer"
-      :color="!(userData && userData.avatar) ? 'primary' : undefined"
-      :variant="!(userData && userData.avatar) ? 'tonal' : undefined"
-    >
+  <VBadge dot bordered location="bottom right" offset-x="3" offset-y="3" color="success">
+    <VAvatar class="cursor-pointer" :color="!(userData && userData.avatar) ? 'primary' : undefined"
+      :variant="!(userData && userData.avatar) ? 'tonal' : undefined">
       <VImg v-if="userData && userData.avatar" :src="userData.avatar" />
       <VIcon v-else icon="tabler-user" />
 
@@ -112,26 +97,11 @@ const userProfileList = [
           <VListItem>
             <template #prepend>
               <VListItemAction start>
-                <VBadge
-                  dot
-                  location="bottom right"
-                  offset-x="3"
-                  offset-y="3"
-                  color="success"
-                  bordered
-                >
-                  <VAvatar
-                    :color="
-                      !(userData && userData.avatar) ? 'primary' : undefined
-                    "
-                    :variant="
-                      !(userData && userData.avatar) ? 'tonal' : undefined
-                    "
-                  >
-                    <VImg
-                      v-if="userData && userData.avatar"
-                      :src="userData.avatar"
-                    />
+                <VBadge dot location="bottom right" offset-x="3" offset-y="3" color="success" bordered>
+                  <VAvatar :color="!(userData && userData.avatar) ? 'primary' : undefined
+                    " :variant="!(userData && userData.avatar) ? 'tonal' : undefined
+    ">
+                    <VImg v-if="userData && userData.avatar" :src="userData.avatar" />
                     <VIcon v-else icon="tabler-user" />
                   </VAvatar>
                 </VBadge>
@@ -146,11 +116,7 @@ const userProfileList = [
 
           <PerfectScrollbar :options="{ wheelPropagation: false }">
             <template v-for="item in userProfileList" :key="item.title">
-              <VListItem
-                v-if="item.type === 'navItem'"
-                :to="item.to"
-                @click="item.onClick && item.onClick()"
-              >
+              <VListItem v-if="item.type === 'navItem'" :to="item.to" @click="item.onClick && item.onClick()">
                 <template #prepend>
                   <VIcon class="me-2" :icon="item.icon" size="22" />
                 </template>

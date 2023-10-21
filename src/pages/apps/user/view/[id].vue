@@ -1,102 +1,83 @@
 <script setup>
-import { useUserListStore } from '@/views/apps/user/useUserListStore'
-import UserBioPanel from '@/views/apps/user/view/UserBioPanel.vue'
-import UserTabAccount from '@/views/apps/user/view/UserTabAccount.vue'
-import UserTabBillingsPlans from '@/views/apps/user/view/UserTabBillingsPlans.vue'
-import UserTabConnections from '@/views/apps/user/view/UserTabConnections.vue'
-import UserTabNotifications from '@/views/apps/user/view/UserTabNotifications.vue'
-import UserTabSecurity from '@/views/apps/user/view/UserTabSecurity.vue'
+import axios from 'axios';
+import { useStore } from "vuex";
 
-const userListStore = useUserListStore()
+
+const store = useStore()
+
+const post = ref({})
 const route = useRoute()
-const userData = ref()
-const userTab = ref(null)
+const isPost = ref(0)
 
-const tabs = [
-  {
-    icon: 'tabler-user-check',
-    title: 'Account',
-  },
-  {
-    icon: 'tabler-lock',
-    title: 'Security',
-  },
-  {
-    icon: 'tabler-currency-dollar',
-    title: 'Billing & Plan',
-  },
-  {
-    icon: 'tabler-bell',
-    title: 'Notifications',
-  },
-  {
-    icon: 'tabler-link',
-    title: 'Connections',
-  },
-]
 
-userListStore.fetchUser(Number(route.params.id)).then(response => {
-  userData.value = response.data
+
+onMounted(() => {
+  fetchPost()
 })
+
+const fetchPost = () => {
+    axios.get(`${store.state.apiUrl}/forum/posts?post_id=${route.params.id}`).then(({ data }) => {
+        post.value = data.data
+        isPost.value = 1
+    }).catch(err => {
+        console.log(err)
+    })
+}
+
+
 </script>
 
 <template>
-  <VRow v-if="userData">
-    <VCol
-      cols="12"
-      md="5"
-      lg="4"
-    >
-      <UserBioPanel :user-data="userData" />
-    </VCol>
+    <VRow v-if="isPost">
+        <VCol :key="'tabler-ad-2'" cols="12" md="12">
+            <VCard :color="'#007BB6'">
 
-    <VCol
-      cols="12"
-      md="7"
-      lg="8"
-    >
-      <VTabs
-        v-model="userTab"
-        class="v-tabs-pill"
-      >
-        <VTab
-          v-for="tab in tabs"
-          :key="tab.icon"
-        >
-          <VIcon
-            :size="18"
-            :icon="tab.icon"
-            class="me-1"
-          />
-          <span>{{ tab.title }}</span>
-        </VTab>
-      </VTabs>
+                <VCardText class="d-flex justify-space-between align-center flex-wrap mt-2">
+                    <div class="text-no-wrap d-flex justify-start">
+                        <VAvatar size="34" :image="post.user.image" />
+                        <h3 class="text-white ms-2">{{ post.user.name }}</h3>
+                    </div>
+                  <div class="d-flex align-center">
+                    <IconBtn icon="tabler-message-circle" color="white" class="me-1" />
+                    <span class="text-subtitle-2 text-white me-4">{{ post.total_comments }}</span>
+                  </div>
+                </VCardText>
+                <div class="ml-4">
+                  <VCardTitle class="text-white my-n1">
+                    {{ post.title }}
+                  </VCardTitle>
+                  <VCardText>
+                    <p class="clamp-text text-white mb-6">
+                      {{ post.description }}
+                    </p>
+                  </VCardText>
+                </div>
+            </VCard>
+        </VCol>
+        <VCol>
+            <VCard :title=" 'Comments'">
+                <VCardText>
+                    <VTimeline side="end" align="start" truncate-line="both" density="compact"
+                        class="v-timeline-density-compact">
+                        <VTimelineItem v-for="comment in post.comments" dot-color="primary" size="x-small">
+                          <div class="d-flex align-center">
+                            <VAvatar :image="comment.user.image" class="me-3" />
+                            <div>
+                              <p class="text-high-emphasis mb-n1">
+                                {{ comment.user.name }}
+                              </p>
+                            </div>
+                          </div>
+                            <div class="d-flex justify-space-between align-center flex-wrap mb-1">
+                                <span class="app-timeline-title ml-5 pl-5">
+                                    {{comment.description}}
+                                </span>
+                            </div>
 
-      <VWindow
-        v-model="userTab"
-        class="mt-6 disable-tab-transition"
-        :touch="false"
-      >
-        <VWindowItem>
-          <UserTabAccount />
-        </VWindowItem>
-
-        <VWindowItem>
-          <UserTabSecurity />
-        </VWindowItem>
-
-        <VWindowItem>
-          <UserTabBillingsPlans />
-        </VWindowItem>
-
-        <VWindowItem>
-          <UserTabNotifications />
-        </VWindowItem>
-
-        <VWindowItem>
-          <UserTabConnections />
-        </VWindowItem>
-      </VWindow>
-    </VCol>
-  </VRow>
+                        </VTimelineItem>
+                    </VTimeline>
+                </VCardText>
+            </VCard>
+        </VCol>
+    </VRow>
 </template>

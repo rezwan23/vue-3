@@ -1,3 +1,4 @@
+
 export default [
   { heading: 'Apps & Pages' },
   {
@@ -5,17 +6,27 @@ export default [
     icon: { icon: 'tabler-smart-home' },
     to: 'dashboards-ecommerce',
   },
+  // {
+  //   title: 'Forums',
+  //   icon: { icon: 'tabler-ad-2' },
+  //   children: [
+  //     { title: 'Vaccines', to: 'apps-forum-list-types-1' },
+  //     { title: 'Medication', to: 'apps-forum-list-types-2' },
+  //     { title: 'Pediatric', to: 'apps-forum-list-types-3' },
+  //     { title: 'Doctors', to: 'apps-forum-list-types-4' },
+  //     { title: 'Setting in', to: 'apps-forum-list-types-5' },
+  //     { title: 'Region', to: 'apps-forum-list-types-6' },
+  //   ],
+  // },
   {
     title: 'Forums',
-    icon: { icon: 'tabler-ad-2' },
-    children: [
-      { title: 'Type 1', to: 'apps-forum' },
-      { title: 'Medication', to: '' },
-      { title: 'Pediatric', to: '' },
-      { title: 'Doctors', to: '' },
-      { title: 'Setting in', to: '' },
-      { title: 'Region', to: '' },
-    ],
+    icon: { icon: 'tabler-archive' },
+    to: 'apps-forum-list',
+  },
+  {
+    title: 'Immunization Record',
+    icon: { icon: 'tabler-archive' },
+    to: 'apps-immunization-list',
   },
   {
     title: 'Users',
@@ -23,10 +34,14 @@ export default [
     to: 'apps-user-list',
   },
   {
-    title: 'Immunization Records',
-    icon: { icon: 'tabler-address-book' },
-    to: '',
+    title: 'News',
+    icon: { icon: 'tabler-article' },
+    children: [
+      { title: 'All News', to: 'apps-news-list' },
+      { title: 'Create News', to: 'apps-news-create' },
+    ],
   },
+
 
 
 
@@ -56,14 +71,16 @@ export default [
       { title: 'Add', to: 'apps-invoice-add' },
     ],
   },
-  {
-    title: 'User',
-    icon: { icon: 'tabler-users' },
-    children: [
-      { title: 'List', to: 'apps-user-list' },
-      { title: 'View', to: { name: 'apps-user-view-id', params: { id: 21 } } },
-    ],
-  },
+  */
+  // {
+  //   title: 'User',
+  //   icon: { icon: 'tabler-users' },
+  //   children: [
+  //     { title: 'List', to: 'apps-user-list' },
+  //     { title: 'View', to: { name: 'apps-user-view-id', params: { id: 21 } } },
+  //   ],
+  // },
+  /*
   {
     title: 'Roles & Permissions',
     icon: { icon: 'tabler-settings' },

@@ -1,21 +1,16 @@
 <script setup>
-import { VDataTableServer } from "vuetify/labs/VDataTable"
-import { paginationMeta } from "@/@fake-db/utils"
-import axios from "axios"
-import { useStore } from "vuex"
-import _ from 'lodash'
-import { toastMessage } from '../../../../swal'
-import Loader from '../../../../Loader.vue'
-import Children from './children.vue'
+import { VDataTableServer } from "vuetify/labs/VDataTable";
+import { paginationMeta } from "@/@fake-db/utils";
+import axios from "axios";
+import { useStore } from "vuex";
+import moment from 'moment';
+import { toastMessage } from '@/swal';
 
 
-const store = useStore()
-const searchQuery = ref("")
-const isDialogVisible = ref(false)
-const search = ref("")
-const totalUsers = ref(0)
-const users = ref([])
-const selectedChildren = ref([])
+const store = useStore();
+const searchQuery = ref("");
+const totalUsers = ref(0);
+const users = ref([]);
 
 const options = ref({
   page: 1,
@@ -25,14 +20,15 @@ const options = ref({
   search: undefined,
 });
 
-const setSearchQuery = () => {
-  searchQuery.value = search.value
+
+const calculateAge = (dob) => {
+   return moment().diff(dob, 'years', true).toFixed(1)
 }
 
 
-const debounceSearchQuery = _.debounce(setSearchQuery, 500)
-
-
+const formatDate = (dateStr, format = 'LLL') => {
+  return moment(dateStr).format(format)
+}
 
 const headers = [
   {
@@ -40,49 +36,47 @@ const headers = [
     key: "id",
   },
   {
-    title: "Image",
-    key: "image",
+    title: "Name",
+    key: "name",
   },
   {
-    title: "Role",
-    key: "role",
+    title: "Immunization Name",
+    key: "immName",
   },
   {
-    title: "Phone",
-    key: "phone",
+    title: "Date",
+    key: "immDate",
   },
   {
-    title : "Gender",
-    key: "gender",
+    title: "Booth Location",
+    key: "location",
   },
   {
-    title: "Children",
-    key: "children",
+    title : "Physician",
+    key: "physician",
+  },
+  {
+    title: "Remark",
+    key: "remark",
+  },
+  {
+    title: "Child",
+    key: "child",
   }
 ];
 
-const handleClick = (itm, {item : raw}) => {
-  selectedChildren.value = raw.children
-  isDialogVisible.value = true
-}
-
 // 👉 Fetching posts
 const fetchUsers = () => {
-  store.commit('requestStarted')
   axios
-    .get(`${store.state.apiUrl}/users?page=${options.value.page}&keywords=${searchQuery.value}`)
+    .get(`${store.state.apiUrl}/immunization-record?page=${options.value.page}`)
     .then(({ data }) => {
-      users.value = data.data.users;
+      users.value = data.data.records;
       totalUsers.value = data.data.total_items;
       options.value.page = data.data.current_page;
       options.value.itemsPerPage = data.data.per_page;
-      store.commit('requestDone')
     })
-    .catch((err) =>{
-      if(err.response.status == 404){
-        toastMessage(err.response.data.message, 'error')
-      }
-      store.commit('requestDone')
+    .catch((err) => {
+      toastMessage(err.response.data.message, 'error')
     });
 };
 
@@ -98,10 +92,6 @@ const getWordStr = (str) => {
 
 <template>
   <section>
-    <Loader/>
-    <VDialog v-model="isDialogVisible" max-width="800">
-      <Children :children="selectedChildren"/>
-    </VDialog>
     <VCard>
       <VCardText class="d-flex flex-wrap gap-4">
 
@@ -110,11 +100,10 @@ const getWordStr = (str) => {
         <div class="d-flex align-center flex-wrap gap-4">
         <!--  👉 Search  -->
           <AppTextField
-            v-model="search"
+            v-model="searchQuery"
             placeholder="Search"
             density="compact"
             style="width: 12.5rem"
-            @input="debounceSearchQuery"
           />
 
         </div>
@@ -131,26 +120,26 @@ const getWordStr = (str) => {
         :headers="headers"
         class="text-no-wrap"
         @update:options="options = $event"
-        @click:row="handleClick"
       >
         <!-- User -->
-        <template #item.image="{ item }">
-          <div class="d-flex align-center">
+        <template #item.child="{ item }">
+          <div class="d-flex align-center" v-if="item.raw.child && Object.keys(item.raw.child)">
             <VAvatar
-              :image="item.raw.image"
+              :image="item.raw.child.image"
               size="38"
               :variant="!item.raw.avatar ? 'tonal' : undefined"
               :color="undefined"
               class="me-3"
             >
-              <VImg v-if="item.raw.image" :src="item.raw.image" />
+              <VImg v-if="item.raw.child.image" :src="item.raw.user.image" />
             </VAvatar>
             <div class="d-flex flex-column">
               <h6 class="text-body-1 font-weight-medium">
                 
-                  {{ item.raw.f_name + ' ' + item.raw.l_name }}
+                  {{ item.raw.child.name }}
                
               </h6>
+              <span class="text-sm text-disabled">Age : {{ calculateAge(item.raw.child.dob) }} Years</span>
             </div>
           </div>
         </template>
@@ -162,33 +151,42 @@ const getWordStr = (str) => {
         </template>
 
 
+        <template #item.name="{ item }">
+          <span class="text-capitalize font-weight-medium">{{
+            item.raw.first_name + ' ' + item.raw.last_name
+          }}</span>
+        </template>
+
         <!-- Plan -->
-        <template #item.role="{ item }">
+        <template #item.immName="{ item }">
           <span class="text-capitalize font-weight-medium">{{
-            item.raw.role
+            item.raw.immunization_name
           }}</span>
         </template>
 
-        <template #item.phone="{ item }">
+        <template #item.immDate="{ item }">
           <span class="text-capitalize font-weight-medium">{{
-            item.raw.phone_code + item.raw.phone
+            formatDate(item.raw.immunization_date)
           }}</span>
         </template>
 
-        <template #item.children="{ item }">
+        <template #item.location="{ item }">
           <span class="text-capitalize font-weight-medium">{{
-            item.raw.children.length
+            item.raw.booth_location
           }}</span>
         </template>
 
-
-        <template #item.gender="{ item }">
+        <template #item.remark="{ item }">
           <span class="text-capitalize font-weight-medium">{{
-            item.raw.gender
+            item.raw.remark
           }}</span>
         </template>
 
-       
+        <template #item.physician="{ item }">
+          <span class="text-capitalize font-weight-medium">{{
+            item.raw.associated_physician
+          }}</span>
+        </template>
 
 
         <template #bottom>

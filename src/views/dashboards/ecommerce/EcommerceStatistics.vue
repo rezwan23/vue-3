@@ -36,19 +36,18 @@ export default {
   },
   computed: {
     apiUrl() {
-      return this.$store.state.apiUrl;
+      return this.$store.state.apiUrl
     },
   },
   mounted() {
-    console.log("mounted!");
-    this.getDashboardData();
+    this.getDashboardData()
   },
   methods: {
     getDashboardData() {
       axios
         .get(`${this.apiUrl}/dashboard/statistics`)
         .then((res) => {
-          this.statistics = res.data.data.statistics;
+          this.statistics = res.data.data.statistics
         })
         .catch((err) => {
           if (err.response.status == 401) {
