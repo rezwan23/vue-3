@@ -3,8 +3,8 @@ import { AppContentLayoutNav, ContentWidth, FooterType, NavbarType } from '@layo
 
 export const config = {
   app: {
-    title: 'title',
-    logo: h('img', { src: '/src/assets/logo.svg' }),
+    title: 'MyHealth',
+    logo: h('img', { src: '/src/assets/logo.jpeg' }),
 
     // logo: () => h('img', { src: 'assets/colored-logo.png' }, null),
     contentWidth: ref(ContentWidth.Boxed),
